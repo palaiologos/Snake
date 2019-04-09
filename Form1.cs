@@ -174,10 +174,10 @@ namespace Snake
                             Snake[i].X--;
                             break;
                         case Direction.Up:
-                            Snake[i].Y++;
+                            Snake[i].Y--;
                             break;
                         case Direction.Down:
-                            Snake[i].Y--;
+                            Snake[i].Y++;
                             break;
                     }
 
@@ -188,22 +188,22 @@ namespace Snake
                     // Detect collisions with game borders.
                     if (Snake[i].X < 0 || Snake[i].Y < 0 || Snake[i].X >= maxXPos || Snake[i].Y >= maxYPos)
                     {
-                        //Die();
+                        Die();
                     }
 
                     // Detect collisions with body.
-                    for (int j = 0; j < Snake.Count; j++)
+                    for (int j = 1; j < Snake.Count; j++)
                     {
                         if (Snake[i].X == Snake[j].X && Snake[i].Y == Snake[j].Y)
                         {
-                            //Die();
+                            Die();
                         }
                     }
 
                     // Detect collisions with food pieces.
                     if (Snake[0].X == food.X && Snake[0].Y == food.Y)
                     {
-                        //Eat();
+                        Eat();
                     }
 
 
@@ -218,6 +218,31 @@ namespace Snake
                 }
             }
 
+        }
+
+        // Snake dies and game is over.
+        private void Die()
+        {
+            Settings.GameOver = true;
+        }
+
+        // The snake eats.
+        private void Eat()
+        {
+            // Add circle to body.
+            Circle food = new Circle();
+            food.X = Snake[Snake.Count - 1].X;
+            food.Y = Snake[Snake.Count - 1].Y;
+
+            // Add the food to the snake's body.
+            Snake.Add(food);
+
+            // Update the total score.
+            Settings.Score += Settings.Points;
+            labelScore.Text = Settings.Score.ToString();
+
+            // Make more food since the last one was eaten.
+            GenerateFood();
         }
 
         // Lets us know a key was was pressed up or down.
